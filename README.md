@@ -1,119 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sembark Tech - Backend Developer Assignment
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Project Overview
 
-## About Laravel
+This project is developed as part of the Backend Developer assignment.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+It implements a multi-tenant URL Shortener service with role-based access control using Laravel 10.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tech Stack
 
-## Learning Laravel
+- Laravel 10
+- PHP 8.1+
+- MySQL
+- Laravel Breeze (Authentication)
+- PHPUnit (Feature Testing)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Architecture Decisions
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Multi-tenancy implemented using `company_id`
+- Role-based access control implemented using Laravel Policies
+- Invitation rules implemented at controller level
+- Short URLs are protected behind authentication middleware (not publicly accessible)
+- Raw SQL used in DatabaseSeeder to create SuperAdmin as required
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Business Rules Implemented
 
-### Premium Partners
+### URL Creation Rules
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- SuperAdmin cannot create short URLs
+- Admin cannot create short URLs
+- Member cannot create short URLs
 
-## Contributing
+### Visibility Rules
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Admin can only see URLs NOT created in their own company
+- Member can only see URLs NOT created by themselves
+- SuperAdmin cannot view all URLs
 
-## Code of Conduct
+### Security Rule
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Short URLs are not publicly resolvable
+- Redirect route is protected by `auth` middleware
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Installation Guide
 
-## License
+### 1. Clone Repository
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# URL Shortener - Laravel 10
-
-A URL shortening service with multi-tenant support (companies) and role-based access control.
-
-## Features
-
-- Multi-company support
-- Role-based access (SuperAdmin, Admin, Member)
-- URL shortening with public redirection
-- Click tracking
-- User invitation system
-- Role-based URL visibility
-
-## Requirements
-
-- PHP >= 8.1
-- Composer
-- MySQL >= 5.7
-- Node.js & NPM (for Laravel Mix)
-
-## Installation
-
-1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd url-shortener
+git clone https://github.com/ankushqds/sembark-url-shortener-assignment.git
+cd sembark-url-shortener-assignment
+
+
+### 2. Install Dependencies
+
+composer install
+
+### 3. Copy Environment File
+
+cp .env.example .env
+
+### 4. Generate Application Key
+
+php artisan key:generate
+
+### 5. Configure Database
+
+Update the DB credentials in .env file.
+
+### 6. Run Migrations and Seeders
+
+php artisan migrate --seed
+
+### 7. Run Application
+
+php artisan serve
+
+Default SuperAdmin Credentials
+
+Email: superadmin@example.com
+
+Password: password
+
+
+php artisan test
+
+
+AI Usage Disclosure
+
+AI tools were used strictly for syntax clarification and framework reference purposes.
+
+ChatGPT was used for:
+
+Clarifying Laravel Policy structure
+
+Reviewing Eloquent relationship implementation
+
+Minor debugging assistance
+
+All business logic, multi-tenant architecture, access rules, and implementation decisions were designed and implemented manually.
