@@ -22,7 +22,17 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            
+            // Redirect based on role
+            $user = Auth::user();
+            
+            if ($user->isSuperAdmin()) {
+                return redirect()->intended(route('dashboard'));
+            } elseif ($user->isAdmin()) {
+                return redirect()->intended(route('dashboard'));
+            } else {
+                return redirect()->intended(route('urls.index')); // Members go directly to URLs
+            }
         }
 
         return back()->withErrors([
@@ -35,6 +45,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        
+        return redirect()->route('home'); // Redirect to welcome page, not login
     }
 }

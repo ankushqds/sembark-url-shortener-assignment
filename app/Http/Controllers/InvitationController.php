@@ -42,7 +42,7 @@ class InvitationController extends Controller
                 'company_id' => 'required|exists:companies,id',
             ]);
             
-            // Super admin can only invite admins for new companies
+            // Super admin can only invite admins
             if ($request->role !== 'admin') {
                 return back()->withErrors(['role' => 'Super Admin can only invite Admins.']);
             }
@@ -50,7 +50,7 @@ class InvitationController extends Controller
             $companyId = $request->company_id;
             
         } elseif ($user->isAdmin()) {
-            // Admin can invite only to their own company
+            // Admin can invite to their own company
             $companyId = $user->company_id;
             
         } else {
@@ -67,8 +67,10 @@ class InvitationController extends Controller
             'role' => $request->role,
             'company_id' => $companyId,
         ]);
+
         return redirect()->route('users.index')
             ->with('success', 'User invited successfully!')
             ->with('generated_password', $password);
     }
+
 }

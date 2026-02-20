@@ -31,15 +31,25 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a href="{{ url('/') }}">URL Shortener</a>
+            <a href="{{ url('/') }}" style="font-weight: bold; font-size: 1.2rem;">🔗 URL Shortener</a>
             @auth
                 <a href="{{ route('dashboard') }}">Dashboard</a>
                 <a href="{{ route('urls.index') }}">My URLs</a>
-                @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin())
+                
+                @if(auth()->user()->isSuperAdmin())
+                    <a href="{{ route('companies.index') }}">Companies</a>
+                    <a href="{{ route('invitations.create') }}">Invite Admin</a>
+                    <a href="{{ route('users.index') }}">All Users</a>
+                @elseif(auth()->user()->isAdmin())
                     <a href="{{ route('invitations.create') }}">Invite User</a>
-                    <a href="{{ route('users.index') }}">Users</a>
+                    <a href="{{ route('users.index') }}">Company Users</a>
                 @endif
-                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                
+                <span style="margin-left: auto;">
+                    {{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})
+                </span>
+                
+                <form method="POST" action="{{ route('logout') }}" style="display: inline; margin-left: 1rem;">
                     @csrf
                     <button type="submit" class="btn" style="background: transparent; border: 1px solid white;">Logout</button>
                 </form>
