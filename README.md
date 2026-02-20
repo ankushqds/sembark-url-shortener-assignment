@@ -1,53 +1,71 @@
-# Sembark Tech - Backend Developer Assignment
+# Sembark Tech - URL Shortener Assignment
 
 ## Project Overview
 
-This project is developed as part of the Backend Developer assignment.
+This project is developed as part of the Backend Developer assignment for Sembark Tech.
 
-It implements a multi-tenant URL Shortener service with role-based access control using Laravel 10.
-
----
-
-## Tech Stack
-
-- Laravel 10
-- PHP 8.1+
-- MySQL
-- Laravel Breeze (Authentication)
-- PHPUnit (Feature Testing)
+It implements a multi-tenant URL Shortener service with role-based access control using Laravel 10. The application allows multiple companies to manage their own short URLs with different user roles and permissions.
 
 ---
 
-## Architecture Decisions
+## 🚀 Tech Stack
 
-- Multi-tenancy implemented using `company_id`
-- Role-based access control implemented using Laravel Policies
-- Invitation rules implemented at controller level
-- Short URLs are protected behind authentication middleware (not publicly accessible)
-- Raw SQL used in DatabaseSeeder to create SuperAdmin as required
+- **Laravel 10** - PHP Framework
+- **PHP 8.1+** - Programming Language
+- **MySQL** - Database
+- **Laravel Breeze** - Authentication Scaffolding
+- **PHPUnit** - Feature Testing
+- **Blade Templates** - Simple UI without CSS frameworks
 
 ---
 
-## Business Rules Implemented
+## 🏗️ Architecture Decisions
+
+### Database Design
+- **Multi-tenancy** implemented using `company_id` foreign key in users and short_urls tables
+- **Role-based access** using `role` column in users table (super_admin, admin, member)
+- **Denormalization** - Storing both `user_id` and `company_id` in short_urls for query performance
+
+### Authentication & Authorization
+- **Laravel Breeze** for authentication scaffolding
+- **Custom middleware** (`CheckRole`) for route-level authorization
+- **Model helpers** (`isSuperAdmin()`, `isAdmin()`, `isMember()`) for clean role checking
+- **Policies** for model-level authorization (can be extended)
+
+### Business Logic
+- **Invitation system** implemented with role-based rules
+- **URL shortening** using random 6-character strings with uniqueness check
+- **Click tracking** for analytics
+- **Public redirection** endpoint for short URLs
+
+---
+
+## 📋 Business Rules Implemented (As per Assignment)
+
+### Authentication & Authorization
+- ✅ Three roles: SuperAdmin, Admin, Member
+- ✅ SuperAdmin seeded via DatabaseSeeder
+- ✅ Login/Logout functionality
+
+### Invitation Rules
+- ✅ SuperAdmin can invite Admin to a new company
+- ✅ Admin can invite Admin or Member to their own company
+- ✅ Company creation by SuperAdmin before inviting Admin
 
 ### URL Creation Rules
+- ✅ Admin can create short URLs
+- ✅ Member can create short URLs
+- ✅ SuperAdmin cannot create short URLs
 
-- SuperAdmin cannot create short URLs
-- Admin cannot create short URLs
-- Member cannot create short URLs
+### URL Visibility Rules
+- ✅ SuperAdmin can see ALL short URLs across all companies
+- ✅ Admin can only see short URLs created in their own company
+- ✅ Member can only see short URLs created by themselves
 
-### Visibility Rules
+### Public Access
+- ✅ All short URLs are publicly resolvable
+- ✅ Redirects to original URL without authentication
 
-- Admin can only see URLs NOT created in their own company
-- Member can only see URLs NOT created by themselves
-- SuperAdmin cannot view all URLs
-
-### Security Rule
-
-- Short URLs are not publicly resolvable
-- Redirect route is protected by `auth` middleware
-
----
 
 ## Installation Guide
 
